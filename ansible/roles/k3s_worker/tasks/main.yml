@@ -1,0 +1,6 @@
+---
+# tasks file for roles/k3s_worker
+
+- name: Install K3s agent on worker
+  shell: |
+    curl -sfL https://get.k3s.io | K3S_URL=https://{{ lookup('file', '/tmp/k3s_ip.txt') }}:6443 K3S_TOKEN={{ lookup('file', '/tmp/k3s_token.txt') | trim }} K3S_NODE_NAME=worker-node1 sh -

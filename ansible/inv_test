@@ -1,0 +1,10 @@
+[all:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[private_servers]
+master ansible_host=10.0.3.177
+worker ansible_host=10.0.2.133
+
+[private_servers:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -i ~/.ssh/id_rsa ubuntu@44.212.24.56"'

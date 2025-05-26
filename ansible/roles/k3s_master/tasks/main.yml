@@ -1,0 +1,51 @@
+---
+# tasks file for roles/k3s_master
+
+- name: start k3s master
+  shell: "curl https://get.k3s.io | sh"
+
+- name: Ensure /etc/rancher/k3s/k3s.yaml has 666 permissions
+  ansible.builtin.file:
+    path: /etc/rancher/k3s/k3s.yaml
+    mode: '0666'
+
+- name: Run kubectl get nodes
+  command: "/usr/local/bin/kubectl get nodes"
+  register: kubectl_output
+
+- name: Show kubectl get nodes output
+  debug:
+    var: kubectl_output.stdout
+
+- name: Write IP address to file
+  copy:
+    dest: /tmp/k3s_ip.txt
+    content: "{{ ansible_default_ipv4.address }}"
+    mode: '0644'
+
+- name: Ensure /var/lib/rancher/k3s/server has 777 permissions
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server
+    mode: '0777'
+    state: directory
+
+- name: Ensure /var/lib/rancher/k3s/server/node-token has 666 permissions
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/node-token
+    mode: '0666'
+
+- name: Read node-token file content using slurp
+  become: true
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: file_content_raw
+
+- name: Decode file content and set fact
+  ansible.builtin.set_fact:
+    file_text: "{{ file_content_raw.content | b64decode }}"
+
+- name: Save decoded node-token to file
+  copy:
+    dest: /tmp/k3s_token.txt
+    content: "{{ file_text }}"
+    mode: '0644'

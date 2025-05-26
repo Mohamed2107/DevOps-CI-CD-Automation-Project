@@ -1,0 +1,12 @@
+- name: master k3s
+  hosts: master
+  become: yes
+  gather_facts: yes
+  roles:
+    - k3s_master
+
+- name: slave k3s
+  hosts: node1
+  become: yes
+  roles:
+    - k3s_worker
