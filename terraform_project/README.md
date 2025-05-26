@@ -1,102 +1,130 @@
-# 🚀 Terraform Project
+# 🚀 Terraform AWS Infrastructure Project
+## 🌐 Overview
+This Terraform project creates a comprehensive AWS infrastructure including:
 
-## 📘 Overview
-> This project uses **Terraform** to manage and provision infrastructure as code.  
-> It's designed to be **modular**, **reusable**, and **scalable**.
+## 🏗️ Virtual Private Cloud (VPC) with public and private subnets
 
-Includes:
-- 🧱 VPC (Virtual Private Cloud)
-- 🌐 Public Subnets
-- 🔐 Private Subnets
-- 💻 EC2 Instances
-- ⚙️ TDS (Custom Module - e.g., database or internal app)
+## 💻 EC2 instances in both public and private subnets
 
----
+## 🎛️ EKS (Elastic Kubernetes Service) cluster setup (currently commented out)
 
-## 📁 Project Structure
+## 🔒 Security groups for network access control
+
+## 👮 IAM roles for EKS permissions
+
+## 📂 Project Structure
+.
+├── .gitignore
+├── LICENSE.txt
+├── modules.json
+├── main.tf (root module)
+└── moduals/
+    ├── ec2/ (EC2 instance module)
+    │   ├── main.tf
+    │   └── variable.tf
+    ├── eks/ (EKS cluster module)
+    │   ├── eks.tf
+    │   ├── iam.tf
+    │   └── variable.tf
+    ├── private_subnet/ (Private subnet module)
+    │   ├── main.tf
+    │   └── variable.tf
+    ├── public_subnet/ (Public subnet module)
+    │   ├── main.tf
+    │   └── variable.tf
+    └── vpc/ (VPC module)
+        ├── main.tf
+        └── variable.tf
+## 🔑 Key Components
+## 🌍 Networking
+  VPC: Created with CIDR block 10.0.0.0/16
+
+  Subnets:
+
+## 🌐 Public subnet for internet-facing resources
+
+## 🔒 Private subnets for EKS nodes (10.0.2.0/24 and 10.0.3.0/24)
+
+## 💻 Compute
+EC2 Instances:
+
+## ☁️ Public instance in the public subnet
+
+## 🔐 Private instances in EKS subnets
+
+## 🖼️ All instances use AMI ami-084568db4383264d4 (Amazon Linux 2)
+
+## ⚙️ Instance type t3.medium
+
+## 🔒 Security
+Security Groups:
+
+## 🛡️ One allowing ports 80, 443, 22, 8080 for TCP traffic
+
+## 🔐 Pre-existing EKS security group (sg-08e20f527f2d68eb5) used for private instances
+
+Key Pair: 🔑 Uses "deployer-key" with public key from local file
+
+## ☸️ Kubernetes (Commented Out)
+EKS cluster configuration with:
+
+## 👮 IAM roles for cluster and nodes
+
+## ⚖️ Node auto-scaling configuration
+
+## 🌐 VPC integration
+
+## 🛠️ Usage
+Initialize Terraform:
 
 ```bash
-terraform_project/
-│
-├── main.tf             # 🌍 Core Terraform logic
-├── provider.tf         # ☁️ Provider setup (e.g., AWS)
-├── variable.tf         # 🔧 Input variables
-│
-└── moduals/            # 📦 Reusable Modules
-    ├── ec2/            # 💻 EC2 Module
-    ├── vpc/            # 🧱 VPC Module
-    ├── private_subnet/ # 🔐 Private Subnet
-    ├── public_subnet/  # 🌐 Public Subnet
-    └── tds/            # ⚙️ TDS Module (Custom/Service)
-```
-## 🔧 Modules Breakdown
-
-### 🧱 VPC Module (`moduals/vpc`)
-- Creates the VPC  
-- Configures routing tables  
-- Adds Internet & NAT gateways
-
-### 🌐 Public Subnet (`moduals/public_subnet`)
-- Adds public subnets to the VPC  
-- Attaches them to the Internet Gateway
-
-### 🔐 Private Subnet (`moduals/private_subnet`)
-- Secure subnets with **no internet access**  
-- Typically used for databases or backend servers
-
-### 💻 EC2 Module (`moduals/ec2`)
-- Launches EC2 instances  
-- Set AMI, instance type, key pair, and security groups
-
-### ⚙️ TDS Module (`moduals/tds`)
-- Custom service logic (e.g., internal tool or database)  
-- Automates setup and provisioning
-
-### 🧩 Step 1: 📥 Clone the Repository
-
-```bash
-# 📦 Clone the GitHub repository to your local machine
-git clone https://github.com/Mohamed2107/terraform_project.git
-
-# 📁 Navigate into the project directory
-cd terraform_project
-```
-
-### ⚙️ Step 2: 🚀 Initialize Terraform
-```bash
-# 🔧 Initialize the Terraform working directory
 terraform init
 ```
-- 📥 This will download all required provider plugins.
-- ⚙️ Sets up the Terraform backend (if configured).
-### 🛠️ Step 3: 📝 Set Your Variables
-. 🧾 Modify variable.tf or create a terraform.tfvars file with your desired values.
+Review execution plan:
+
 ```bash
-# Example terraform.tfvars content
-vpc_cidr           = "10.0.0.0/16"
-instance_type      = "t2.micro"
-availability_zones = ["us-east-1a", "us-east-1b"]
-```
-### 🔍 Step 4: 🧪 Review the Terraform Plan
-```bash
-# 🔎 Preview the changes Terraform will make
 terraform plan
+Apply changes:
 ```
-- ✅ This will show what will be created or modified without making actual changes.
-### 🚀 Step 5: ✅ Apply the Configuration
 ```bash
-# 🚀 Deploy your infrastructure
 terraform apply
+To destroy resources:
 ```
-- 🆗 You’ll be asked to confirm the changes. Type yes to proceed.
+```bash
+terraform destroy
+```
+## 📋 Requirements
+## ⚙️ Terraform installed
 
-- 🏗️ Terraform will start provisioning the infrastructure.
-## 💡 Why Use Modules?
+## 🔑 AWS credentials configured
 
-| ✅ Feature      | 🔎 Description                                                                 |
-|-----------------|-------------------------------------------------------------------------------|
-| ♻️ Reusability  | Use the same logic across multiple environments or projects                   |
-| 🧹 Maintainability | Isolated module logic simplifies updates and troubleshooting                |
-| 📈 Scalability   | Easily extend infrastructure without rewriting everything                    |
+## 🔐 Existing SSH key pair ("deployer-key")
 
+## 📝 Notes
+The RDS and some EKS-related resources are currently commented out in the configuration
 
+The project uses the Mozilla Public License 2.0
+
+Terraform state files are ignored in .gitignore
+
+## 📤 Outputs
+The configuration includes outputs for:
+
+## 🌐 Subnet IDs
+
+## � EKS cluster name (when uncommented)
+
+## 🎨 Customization
+You can modify the following variables in the respective modules:
+
+## 🖼️ AMI IDs
+
+## ⚙️ Instance types
+
+## 🔢 CIDR blocks
+
+## 🔐 Security group rules
+
+## ⚖️ EKS node scaling parameters
+
+This version maintains all the technical information while making it more visually appealing with relevant emojis! 😊
