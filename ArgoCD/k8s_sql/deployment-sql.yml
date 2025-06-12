@@ -15,11 +15,17 @@ spec:
       containers:
       - name: mysql
         image: mohamed1461/mysql:latest
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 30
+          periodSeconds: 10
         env:
-        - name: MYSQL_USER
-          value: root  
         - name: MYSQL_ROOT_PASSWORD
-          value: password
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-password
         - name: MYSQL_DATABASE
           value: todo_db
         volumeMounts:
@@ -30,3 +36,9 @@ spec:
         persistentVolumeClaim:
           claimName: mysql-pvc
 
+
+
+
+
+##sudo mkdir -p /mnt/data/mysql
+##sudo chmod 777 /mnt/data/mysql

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: mohamed1461/web:12
+        image: mohamed1461/web:15
         ports:
         - containerPort: 5000
         env:
@@ -23,6 +23,9 @@ spec:
         - name: DB_USER
           value: root
         - name: DB_PASSWORD
-          value: password
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-password
         - name: DB_DATABASE
           value: todo_db

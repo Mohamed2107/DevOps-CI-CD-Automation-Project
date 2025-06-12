@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql-pvc
 spec:
-  volumeName: mysql-pv  # ← دي اللي بتربطهم
+  volumeName: mysql-pv 
   accessModes:
     - ReadWriteOnce
   resources:
